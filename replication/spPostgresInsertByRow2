@@ -1,0 +1,397 @@
+USE [wiztel]
+GO
+
+/****** Object:  StoredProcedure [dbo].[spPostgresInsertByRow2]    Script Date: 08/24/2015 19:23:57 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE PROCEDURE [dbo].[spPostgresInsertByRow2]
+    @tablename as varchar(max)= null,
+    @pkey as varchar(max)= null,
+	  @field1 as varchar(max)= null,
+	@field2 as varchar(max)= null,
+	@field3 as varchar(max)= null,
+	@field4 as varchar(max)= null,
+    @field5 as varchar(max)= null,
+	@field6 as varchar(max)= null,
+	@field7 as varchar(max)= null,
+	@field8 as varchar(max)= null,
+	@field9 as varchar(max)= null,
+	@field10 as varchar(max)= null,
+    @field11 as varchar(max)= null,
+	@field12 as varchar(max)= null,
+	@field13 as varchar(max)= null,
+    @field14 as varchar(max)= null,
+    @field15 as varchar(max)= null,
+    @count as integer
+AS
+BEGIN
+
+declare  @TempTable table( 
+	id  bigint ,
+    field1  varchar(100),
+    field2  varchar(100),
+field3  varchar(100),
+field4  varchar(100),
+field5  varchar(100),
+field6  varchar(100),
+field7  varchar(100),
+field8  varchar(100),
+field9  varchar(100),
+field10  varchar(100),
+field11  varchar(100),
+field12  varchar(100),
+field13  varchar(100),
+field14  varchar(100),
+field15  varchar(100)
+)
+
+DECLARE @qq  varchar(max)
+
+DECLARE @q  varchar(max)
+
+DECLARE @f1  varchar(100)
+DECLARE @f2  varchar(100)
+DECLARE @f3  varchar(100)
+DECLARE @f4  varchar(100)
+
+DECLARE @f5  varchar(100)
+DECLARE @f6  varchar(100)
+DECLARE @f7  varchar(100)
+DECLARE @f8  varchar(100)
+DECLARE @f9  varchar(100)
+DECLARE @f10  varchar(100)
+DECLARE @f11  varchar(100)
+DECLARE @f12  varchar(100)
+DECLARE @f13  varchar(100)
+DECLARE @f14  varchar(100)
+DECLARE @f15  varchar(100)
+
+declare @c varchar(1) 
+declare @k as int
+
+declare @w varchar(1) 
+
+declare @qlen as int
+
+ DECLARE @sfield1  varchar(100)
+ DECLARE @sfield2  varchar(100)
+DECLARE @sfield3  varchar(100)
+DECLARE @sfield4  varchar(100)
+DECLARE @sfield5  varchar(100)
+DECLARE @sfield6  varchar(100)
+DECLARE @sfield7  varchar(100)
+DECLARE @sfield8  varchar(100)
+DECLARE @sfield9  varchar(100)
+DECLARE @sfield10  varchar(100)
+DECLARE @sfield11  varchar(100)
+DECLARE @sfield12  varchar(100)
+DECLARE @sfield13  varchar(100)
+DECLARE @sfield14  varchar(100)
+DECLARE @sfield15  varchar(100)
+
+
+create table #fake ( 
+[fake] [bigint]
+ )
+
+
+set @sfield1=replace(@field1,'@','')
+set @sfield2=replace(@field2,'@','')
+set @sfield3=replace(@field3,'@','')
+set @sfield4=replace(@field4,'@','')
+set @sfield5=replace(@field5,'@','')
+set @sfield6=replace(@field6,'@','')
+set @sfield7=replace(@field7,'@','')
+set @sfield8=replace(@field8,'@','')
+set @sfield9=replace(@field9,'@','')
+set @sfield10=replace(@field10,'@','')
+set @sfield11=replace(@field11,'@','')
+set @sfield12=replace(@field12,'@','')
+set @sfield13=replace(@field13,'@','')
+set @sfield14=replace(@field14,'@','')
+set @sfield15=replace(@field15,'@','')
+
+
+set @sfield1=replace(@sfield1,'&','')
+set @sfield2=replace(@sfield2,'&','')
+set @sfield3=replace(@sfield3,'&','')
+set @sfield4=replace(@sfield4,'&','')
+set @sfield5=replace(@sfield5,'&','')
+set @sfield6=replace(@sfield6,'&','')
+set @sfield7=replace(@sfield7,'&','')
+set @sfield8=replace(@sfield8,'&','')
+set @sfield9=replace(@sfield9,'&','')
+set @sfield10=replace(@sfield10,'&','')
+set @sfield11=replace(@sfield11,'&','')
+set @sfield12=replace(@sfield12,'&','')
+set @sfield13=replace(@sfield13,'&','')
+set @sfield14=replace(@sfield14,'&','')
+set @sfield15=replace(@sfield15,'&','')
+
+
+     set @c=''--char(13)	-- carriage return
+
+ declare @topid bigint
+
+	SET NOCOUNT ON
+
+set @q= ' select * from openquery (pgslave , '' select top 1 "' + @pkey + '" from "' + @tablename + '" order by "' + @pkey + '" desc '' ) ' + @c
+
+
+insert into @TempTable (id) exec (@q)
+
+set @topid=(select id from @TempTable)
+
+set @topid=isnull(@topid,0)
+
+/*
+print('begin:'+@c)
+print (cast(@topid as varchar))
+print('e:'+@c)
+*/
+
+delete @TempTable
+
+set @k=0
+
+set @qq=' insert into "' + @tablename + '" ( "' + @pkey + '" '
+if isnull(@sfield1,'') <> '' set @qq=@qq+ ', "'+@sfield1+'"  '
+if isnull(@sfield2,'') <> '' set @qq=@qq+ ', "'+@sfield2+'"  '
+if isnull(@sfield3,'') <> '' set @qq=@qq+ ', "'+@sfield3+'"  '
+if isnull(@sfield4,'') <> '' set @qq=@qq+ ', "'+@sfield4+'"  '
+if isnull(@sfield5,'') <> '' set @qq=@qq+ ', "'+@sfield5+'"  '
+if isnull(@sfield6,'') <> '' set @qq=@qq+ ', "'+@sfield6+'"  '
+if isnull(@sfield7,'') <> '' set @qq=@qq+ ', "'+@sfield7+'"  '
+if isnull(@sfield8,'') <> '' set @qq=@qq+ ', "'+@sfield8+'"  '
+if isnull(@sfield9,'') <> '' set @qq=@qq+ ', "'+@sfield9+'"  '
+if isnull(@sfield10,'') <> '' set @qq=@qq+ ', "'+@sfield10+'" '
+if isnull(@sfield11,'') <> '' set @qq=@qq+ ', "'+@sfield11+'" '
+if isnull(@sfield12,'') <> '' set @qq=@qq+ ', "'+@sfield12+'" '
+if isnull(@sfield13,'') <> '' set @qq=@qq+ ', "'+@sfield13+'" '
+if isnull(@sfield14,'') <> '' set @qq=@qq+ ', "'+@sfield14+'" '
+if isnull(@sfield15,'') <> '' set @qq=@qq+ ', "'+@sfield15+'" '
+
+--set @qq=@qq+ ' , "vtrid" , "username", "IsActive" ) values' 
+set @qq=@qq+ ' ) values' 
+
+
+
+while  not ( (@topid is null) or ( @k >= @count ) )  
+
+begin
+
+
+delete @TempTable
+
+insert into @TempTable  exec spPostgresInsertHelp1 @tablename=@tablename, @pkey=@pkey, @topid=@topid,
+@field1=@sfield1,
+@field2=@sfield2,
+@field3=@sfield3,
+@field4=@sfield4,
+@field5=@sfield5,
+@field6=@sfield6,
+@field7=@sfield7,
+@field8=@sfield8,
+@field9=@sfield9,
+@field10=@sfield10,
+@field11=@sfield11,
+@field12=@sfield12,
+@field13=@sfield13,
+@field14=@sfield14,
+@field15=@sfield15
+
+
+set @topid = null -- ?!
+
+select @topid=id, @f1=isnull(field1,':@:'), @f2=isnull(field2,':@:'), 
+@f3=isnull(field3,':@:'), @f4=isnull(field4,':@:'),@f5=isnull(field5,':@:'), @f6=isnull(field6,':@:'),
+@f7=isnull(field7,':@:'), @f8=isnull(field8,':@:'),@f9=isnull(field9,':@:'), @f10=isnull(field10,':@:'),
+@f11=isnull(field11,':@:'), @f12=isnull(field12,':@:'),@f13=isnull(field13,':@:'), @f14=isnull(field14,':@:')
+,@f15=isnull(field15,':@:')
+
+from @TempTable  
+
+--'select replace(description,'''',':#:'),* from tblvoipusercustomer where id = 1
+--replace('01's UK Route'
+
+set @f1=replace(replace(@f1,'''',':#:'),char(9),'')
+set @f2=replace(replace(@f2,'''',':#:'),char(9),'')
+set @f3=replace(replace(@f3,'''',':#:'),char(9),'')
+set @f4=replace(replace(@f4,'''',':#:'),char(9),'')
+set @f5=replace(replace(@f5,'''',':#:'),char(9),'')
+set @f6=replace(replace(@f6,'''',':#:'),char(9),'')
+set @f7=replace(replace(@f7,'''',':#:'),char(9),'')
+set @f8=replace(replace(@f8,'''',':#:'),char(9),'')
+set @f9=replace(replace(@f9,'''',':#:'),char(9),'')
+set @f10=replace(replace(@f10,'''',':#:'),char(9),'')
+set @f11=replace(replace(@f11,'''',':#:'),char(9),'')
+set @f12=replace(replace(@f12,'''',':#:'),char(9),'')
+set @f13=replace(replace(@f13,'''',':#:'),char(9),'')
+set @f14=replace(replace(@f14,'''',':#:'),char(9),'')
+set @f15=replace(replace(@f15,'''',':#:'),char(9),'')
+
+
+if isnull(@topid,0) > 0
+begin
+
+set @q=' ( ' + cast(@topid as varchar)
+
+
+set @w=''
+if charindex('@',@field1) > 0 set @w=''''
+
+if charindex('&',@field1) > 0 if (@f1 = '0' or @f1=':@:') set @f1='False' else set @f1='True'
+--if charindex('&',@field1) > 0 if @f1 = '0' set @f1='False' else set @f1='True'
+
+if isnull(@sfield1,'') <> '' set @q=@q+ ', '+@w+@f1+@w+'  '
+
+set @w=''
+if charindex('@',@field2) > 0 set @w=''''
+if charindex('&',@field2) > 0 if (@f2 = '0' or @f2=':@:') set @f2='False' else set @f2='True'
+
+if isnull(@sfield2,'') <> '' set @q=@q+ ', '+@w+@f2+@w+'  '
+
+set @w=''
+if charindex('@',@field3) > 0 set @w=''''
+if charindex('&',@field3) > 0 if (@f3 = '0' or @f3=':@:') set @f3='False' else set @f3='True'
+
+if isnull(@sfield3,'') <> '' set @q=@q+ ', '+@w+@f3+@w+'  '
+
+set @w=''
+if charindex('@',@field4) > 0 set @w=''''
+if charindex('&',@field4) > 0 if (@f4 = '0' or @f4=':@:') set @f4='False' else set @f4='True'
+
+if isnull(@sfield4,'') <> '' set @q=@q+ ', '+@w+@f4+@w+'  '
+
+
+
+set @w=''
+if charindex('@',@field5) > 0 set @w='''' --+   ''''
+if charindex('&',@field5) > 0 if (@f5 = '0' or @f5=':@:') set @f5='False' else set @f5='True'
+
+if isnull(@sfield5,'') <> '' set @q=@q+ ', '+@w+@f5+@w+'  '
+
+
+set @w=''
+if charindex('@',@field6) > 0 set @w='''' --+  ''''
+if charindex('&',@field6) > 0 if (@f6 = '0' or @f6=':@:')  set @f6='False' else set @f6='True'
+
+if isnull(@sfield6,'') <> '' set @q=@q+ ', '+@w+@f6+@w+'  '
+
+set @w=''
+if charindex('@',@field7) > 0 set @w='''' --+   ''''
+
+if charindex('&',@field7) > 0 if (@f7 = '0' or @f7=':@:') set @f7='False' else set @f7='True'
+if isnull(@sfield7,'') <> '' set @q=@q+ ', '+@w+@f7+@w+'  '
+
+set @w=''
+if charindex('@',@field8) > 0 set @w=''''
+if charindex('&',@field8) > 0 if (@f8 = '0' or @f8=':@:') set @f8='False' else set @f8='True'
+
+if isnull(@sfield8,'') <> '' set @q=@q+ ', '+@w+@f8+@w+'  '
+
+set @w=''
+if charindex('@',@field9) > 0 set @w=''''
+if charindex('&',@field9) > 0 if (@f9 = '0' or @f9=':@:') set @f9='False' else set @f9='True'
+
+if isnull(@sfield9,'') <> '' set @q=@q+ ', '+@w+@f9+@w+'  '
+
+set @w=''
+if charindex('@',@field10) > 0 set @w=''''
+if charindex('&',@field10) > 0 if (@f10 = '0' or @f10=':@:') set @f10='False' else set @f10='True'
+if isnull(@sfield10,'') <> '' set @q=@q+ ', '+@w+@f10+@w+' '
+
+
+set @w=''
+if charindex('@',@field11) > 0 set @w=''''
+if charindex('&',@field11) > 0 if (@f11 = '0' or @f11=':@:') set @f11='False' else set @f11='True'
+if isnull(@sfield11,'') <> '' set @q=@q+ ', '+@w+@f11+@w+' '
+
+set @w=''
+if charindex('@',@field12) > 0 set @w=''''
+if charindex('&',@field12) > 0 if (@f12 = '0' or @f12=':@:') set @f12='False' else set @f12='True'
+if isnull(@sfield12,'') <> '' set @q=@q+ ', '+@w+@f12+@w+' '
+
+set @w=''
+if charindex('@',@field13) > 0 set @w=''''
+if charindex('&',@field13) > 0 if (@f13 = '0' or @f13=':@:') set @f13='False' else set @f13='True'
+if isnull(@sfield13,'') <> '' set @q=@q+ ', '+@w+@f13+@w+' '
+
+set @w=''
+if charindex('@',@field14) > 0 set @w=''''
+if charindex('&',@field14) > 0 if (@f14 = '0' or @f14=':@:') set @f14='False' else set @f14='True'
+if isnull(@sfield14,'') <> '' set @q=@q+ ', '+@w+@f14+@w+' '
+
+set @w=''
+if charindex('@',@field15) > 0 set @w=''''
+if charindex('&',@field15) > 0 if (@f15 = '0' or @f15=':@:') set @f15='False' else set @f15='True'
+if isnull(@sfield15,'') <> '' set @q=@q+ ', '+@w+@f15+@w+' '
+
+
+--set @q=@q+ ' , 1 , '''' , True )  '
+
+set @q=@q+ '  )  '
+
+set @q=replace(@q,'''','''''')
+set @q=replace(@q,''''':@:''''','null')
+set @q=', ' +  replace(@q,':@:','null')
+
+if (len(@qq) + len(@q)) < 4000
+begin
+   set @qq=@qq +  @q--@c + @q 
+end
+else
+begin
+   set @k=  @count
+end
+
+
+set @k=@k+1
+
+
+end
+
+
+end
+
+
+if @k > 0
+
+
+begin
+
+
+set @qq=replace(@qq,'values,','values  ')
+set @qq=replace(@qq,'[','')
+set @qq=replace(@qq,']','')
+
+set @qq=replace(@qq,':#:','''''''''')
+
+--print(@qq)
+
+set @qq= ' insert into #fake (fake) SELECT count(*) from OPENQUERY(pgslave,'''+ @qq+''' ) ' + @c
+
+
+exec(@qq)
+
+--print('go')
+
+end
+
+--print('go')
+DROP TABLE #fake 
+
+END
+
+
+
+
+
+
+GO
+
+
